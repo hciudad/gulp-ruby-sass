@@ -47,8 +47,13 @@ function removePath(source, path) {
 }
 
 module.exports = function (options) {
+	options = options || {};
+
 	var relativeCompileDir = '_14139e58-9ebe-4c0f-beca-73a65bb01ce9';
 	var procDir = process.cwd();
+
+	var container = 'gulp-ruby-sass' + ((options.container) ? '-' + options.container : '');
+	delete options.container;
 
 	// error handling
 	var noLogMatcher = /execvp\(\): No such file or directory/;
@@ -57,14 +62,13 @@ module.exports = function (options) {
 
 	return intermediate({
 		output: relativeCompileDir,
-		container: 'gulp-ruby-sass'
+		container: container
 	}, function (tempDir, cb, vinylFiles) {
 
 		// all paths passed to sass must have unix path separators
 		tempDir = slash(tempDir);
 		var compileDir = slash(path.join(tempDir, relativeCompileDir));
 
-		options = options || {};
 		options.update = tempDir + ':' + compileDir;
 		options.loadPath = typeof options.loadPath === 'undefined' ? [] : [].concat(options.loadPath);
 
